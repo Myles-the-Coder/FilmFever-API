@@ -1,7 +1,7 @@
 const http = require('http');
 const url = require('url');
 const fs = require('fs');
-const PORT = process.env.PORT;
+const PORT = 8080;
 
 http
 	.createServer((req, res) => {
