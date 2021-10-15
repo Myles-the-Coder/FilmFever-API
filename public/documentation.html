@@ -4,12 +4,197 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css"
+			integrity="sha512-xiunq9hpKsIcz42zt0o2vCo34xV0j6Ny8hgEylN3XBglZDtTZ2nwnqF/Z/TTCc18sGdvCjbFInNd++6q3J0N6g=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link rel="stylesheet" href="../css/style.css" />
 		<title>Documentation</title>
 	</head>
 	<body>
 		<h1>FilmFever API</h1>
 		<p>
-			This API will return movie data (description, genre, director, image URL, whether it is featured or not) about a movie by title to the user. Additional information includes a genre description by name/title and director information by name.
+			This API will return movie data (description, genre, director, image URL,
+			whether it is featured or not) about a movie by title to the user.
+			Additional information includes a genre description by name/title and
+			director information by name.
 		</p>
+		<table>
+			<thead>
+				<tr>
+					<th>BUSINESS LOGIC</th>
+					<th>URL</th>
+					<th>HTTP METHOD</th>
+					<th>REQUEST DATA FORMAT</th>
+					<th>RESPONSE DATA BODY</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Return a list of all movies to user</td>
+					<td>/movies</td>
+					<td>GET</td>
+					<td>None</td>
+					<td>A JSON object holding data about all the movies.</td>
+				</tr>
+				<tr>
+					<td>Return data about a single movie by title</td>
+					<td>/movies/[title]</td>
+					<td>GET</td>
+					<td>None</td>
+					<td>
+						A JSON object holding data about a single movie, including
+						description, release year, genre(s), director, poster URL.
+						<br />
+						Example:
+						<br />
+						<small>
+							{ "title" : "The Godfather", "releaseYear": 1972, "description":
+							"An organized crime dynasty's aging patriarch transfers control of
+							his clandestine empire to his reluctant son." "genre": ["crime",
+							"Drama"], "director": "Frank Ford Coppola" }
+						</small>
+					</td>
+				</tr>
+				<tr>
+					<td>Return data about a genre (description) by name/title</td>
+					<td>/movies/[genre]</td>
+					<td>GET</td>
+					<td>None</td>
+					<td>
+						A short description detailing information about a specific film
+						genre.
+					</td>
+				</tr>
+        <tr>
+          <td>Return a list of all directors</td>
+          <td>/directors</td>
+          <td>GET</td>
+          <td>None</td>
+          <td>A list of all directors currently in the database.</td>
+        </tr>
+				<tr>
+					<td>
+						Return data about a director (bio, birth year, death year) by name
+					</td>
+					<td>/directors/[name]</td>
+					<td>GET</td>
+					<td>None</td>
+					<td>
+						A JSON object holding data about a single director.
+						<br />
+						Example:
+						<br />
+						<small>
+							{ "name": "Frank Ford Coppola", "bio": "Schooled in low-budget
+							filmmaking, Francis Ford Coppola (born 1939) has gone on to direct
+							some of the most financially successful and critically acclaimed
+							movies in U.S. cinematic history. Francis Ford Coppola, director
+							of The Godfather and its two sequels, would be considered one of
+							the masters of modern cinema based on those credits alone.",
+							"birthYear": 1939, "deathYear": null }
+						</small>
+					</td>
+				</tr>
+				<tr>
+					<td>Allow new users to register</td>
+					<td>/signup</td>
+					<td>POST</td>
+					<td>
+						A JSON object holding data about the user to add.
+						<br />
+						Example:
+						<br />
+						<small>
+							{ "userName": "John_Doe", "email": "johndoe@gmail.com",
+							"password": "*********" }
+						</small>
+					</td>
+					<td>
+						A JSON object holding data about the user that was added, including
+						an ID.
+						<br />
+						Example:
+						<br />
+						<small>
+							{ "id": 1, "userName": "John_Doe", "email": "johndoe@gmail.com" }
+						</small>
+					</td>
+				</tr>
+        <tr>
+          <td>Allow users to view their account info (username, email)</td>
+          <td>/accounts/[id]</td>
+          <td>GET</td>
+          <td>None</td>
+          <td>A JSON object holding user account information. 
+            <br>
+            Example:
+            <br>
+            <small>
+              {
+                "id": 1,
+                "userName": "John_Doe",
+                "email": "johndoe@gmail.com"
+              }
+            </small>
+          </td>
+        </tr>
+				<tr>
+					<td>Allow users to update their user info (username)</td>
+					<td>/accounts/update/[id]</td>
+					<td>PUT</td>
+					<td>
+						A JSON object holding updated information provided by user.
+						<br />
+						Example:
+						<br />
+						<small>
+							{ "userName": "FilmFan123", "password": "*******" }
+						</small>
+					</td>
+					<td>
+						A message indicating that the user information was successfully
+						updated.
+					</td>
+				</tr>
+				<tr>
+					<td>Allow users to add a movie to their list of favorites</td>
+					<td>/accounts/favorites[id]</td>
+					<td>POST</td>
+					<td>
+						A JSON object holding information about the movie added to
+						"favorites" list.
+						<br />
+						Example:
+						<br />
+						<small> { "title": "Gone with the Wind" } </small>
+					</td>
+					<td>
+						A message notification indicating the movie was added to the
+						"favorites" list.
+					</td>
+				</tr>
+				<tr>
+					<td>Allow users to remove a movie from their list of favorites</td>
+					<td>/account/favorites/[id]</td>
+					<td>DELETE</td>
+					<td>None</td>
+					<td>
+						A message indicating that the selected movie has been successfully
+						removed from the "favorites" list.
+					</td>
+				</tr>
+				<tr>
+					<td>All existing users to deactivate their account</td>
+					<td>/account</td>
+					<td>DELETE</td>
+					<td>None</td>
+					<td>A message indicating that a user email has been removed.</td>
+				</tr>
+			</tbody>
+		</table>
 	</body>
 </html>
