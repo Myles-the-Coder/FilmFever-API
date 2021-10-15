@@ -1,0 +1,27 @@
+* {
+  text-align: center;
+}
+
+thead th:nth-child(odd) {
+  background-color: lightgray;
+}
+
+thead th:nth-child(even) {
+  background-color: whitesmoke;
+}
+
+td {
+  border-left: 1px solid lightgray;
+  border-right: 1px solid lightgray;
+  max-width: 200px;
+}
+
+small {
+  font-family: monospace;
+  background-color: rgb(243, 241, 241);
+  color: #000;
+}
+
+td:nth-of-type(1),td:nth-of-type(5) {
+  padding: 5px 0;
+}
