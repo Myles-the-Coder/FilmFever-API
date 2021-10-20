@@ -52,21 +52,33 @@
 						Example:
 						<br />
 						<small>
-							{ "title" : "The Godfather", "releaseYear": 1972, "description":
+							{ "Title" : "The Godfather", "Releaseyear": 1972, "Description":
 							"An organized crime dynasty's aging patriarch transfers control of
-							his clandestine empire to his reluctant son." "genre": ["crime",
-							"Drama"], "director": "Frank Ford Coppola" }
+							his clandestine empire to his reluctant son." "Genre": {Genre JSON Object}, "Director": {Director JSON Object}}
 						</small>
 					</td>
 				</tr>
+        <tr>
+          <td>Return a list of all genres</td>
+          <td>/genres</td>
+          <td>GET</td>
+          <td>None</td>
+          <td>A JSON object holding data about all available genres</td>
+        </tr>
 				<tr>
 					<td>Return data about a genre (description) by name/title</td>
-					<td>/movies/[genre]</td>
+					<td>/genres/[genre]</td>
 					<td>GET</td>
 					<td>None</td>
 					<td>
-						A short description detailing information about a specific film
-						genre.
+					A JSON object holding data about a single genre. 
+          <br>
+          Example:
+          <br>
+          <small>{
+            "Name": "Drama",
+            "Description": "Drama is a film genre that..."
+          }</small>
 					</td>
 				</tr>
         <tr>
@@ -78,7 +90,7 @@
         </tr>
 				<tr>
 					<td>
-						Return data about a director (bio, birth year, death year) by name
+						Return data about a director (Name , Bio, Birth year, Deathyear) by name
 					</td>
 					<td>/directors/[name]</td>
 					<td>GET</td>
@@ -89,13 +101,8 @@
 						Example:
 						<br />
 						<small>
-							{ "name": "Frank Ford Coppola", "bio": "Schooled in low-budget
-							filmmaking, Francis Ford Coppola (born 1939) has gone on to direct
-							some of the most financially successful and critically acclaimed
-							movies in U.S. cinematic history. Francis Ford Coppola, director
-							of The Godfather and its two sequels, would be considered one of
-							the masters of modern cinema based on those credits alone.",
-							"birthYear": 1939, "deathYear": null }
+							{ "Bame": "Frank Ford Coppola", "Bio": "Short bio on director's life",
+							"Birthyear": 1939, "Deathyear": null}
 						</small>
 					</td>
 				</tr>
@@ -110,7 +117,7 @@
 						<br />
 						<small>
 							{ "userName": "John_Doe", "email": "johndoe@gmail.com",
-							"password": "*********" }
+							"password": "*********", "Birthday": "1988-02-23" }
 						</small>
 					</td>
 					<td>
@@ -125,8 +132,8 @@
 					</td>
 				</tr>
         <tr>
-          <td>Allow users to view their account info (username, email)</td>
-          <td>/accounts/[id]</td>
+          <td>Allow users to view their account info by Username</td>
+          <td>/accounts/[Username]</td>
           <td>GET</td>
           <td>None</td>
           <td>A JSON object holding user account information. 
@@ -143,8 +150,8 @@
           </td>
         </tr>
 				<tr>
-					<td>Allow users to update their user info (username)</td>
-					<td>/accounts/update/[id]</td>
+					<td>Allow users to update their user info by Username</td>
+					<td>/accounts/update/[Username]</td>
 					<td>PUT</td>
 					<td>
 						A JSON object holding updated information provided by user.
@@ -162,15 +169,14 @@
 				</tr>
 				<tr>
 					<td>Allow users to add a movie to their list of favorites</td>
-					<td>/accounts/favorites[id]</td>
+					<td>/accounts/[Username]/movies/[MovieID]</td>
 					<td>POST</td>
 					<td>
-						A JSON object holding information about the movie added to
-						"favorites" list.
+            ID of movie that is to be pushed to the "favorites" array.</small>
 						<br />
 						Example:
 						<br />
-						<small> { "title": "Gone with the Wind" } </small>
+						<small> $addToSet: {Favorites: req.params.MovieID} </small>
 					</td>
 					<td>
 						A message notification indicating the movie was added to the
@@ -179,7 +185,7 @@
 				</tr>
 				<tr>
 					<td>Allow users to remove a movie from their list of favorites</td>
-					<td>/account/favorites/[id]</td>
+					<td>/account/[Username]/movies/[MovieID]</td>
 					<td>DELETE</td>
 					<td>None</td>
 					<td>
@@ -189,7 +195,7 @@
 				</tr>
 				<tr>
 					<td>All existing users to deactivate their account</td>
-					<td>/account</td>
+					<td>/account/[Username]</td>
 					<td>DELETE</td>
 					<td>None</td>
 					<td>A message indicating that a user email has been removed.</td>
