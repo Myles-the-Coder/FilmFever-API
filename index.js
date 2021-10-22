@@ -5,10 +5,9 @@ import { Movie, Genre, Director, User } from './models.js';
 import mongoose from 'mongoose';
 import auth from './auth.js';
 import passport from 'passport';
-import passportConfig from './passport.js';
+import { applyLocalPassport, applyJwtStrategy } from './passport.js';
 
 const app = express();
-passportConfig();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan('common'));
@@ -26,6 +25,8 @@ mongoose.connect('mongodb://localhost:27017/filmfeverDB', {
 });
 
 auth(app);
+applyLocalPassport(passport)
+applyJwtStrategy(passport)
 
 function displayErrorMsg(err) {
 	console.error(err);
