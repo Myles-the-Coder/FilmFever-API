@@ -1,14 +1,15 @@
-import passport from 'passport'
 import passportLocal from 'passport-local';
 import { User } from './models.js';
-import passportJWT from 'passport-jwt';
+import { Strategy, ExtractJwt } from 'passport-jwt';
+import { config } from './configs.js';
 
-function passportConfig() {
-	const LocalStrategy = passportLocal.Strategy;
-	const JWTStrategy = passportJWT.Strategy;
-	const ExtractJWT = passportJWT.ExtractJwt;
-	let Users = User;
+const LocalStrategy = passportLocal.Strategy;
+const options = {}
+	options.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken(),
+	options.secretOrKey =  config.passport.secret;
+let Users = User;
 
+export const applyLocalPassport = passport => {
 	passport.use(
 		new LocalStrategy(
 			{
@@ -29,24 +30,24 @@ function passportConfig() {
 							message: 'Incorrect username or password.',
 						});
 					}
+					console.log('finished');
+					return callback(null, user);
 				});
-			}
-		)
-	);
-
-	passport.use(
-		new JWTStrategy(
-			{
-				jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-				secretOrKey: 'your_jwt_secret',
-			},
-			(jwtPayload, callback) => {
-				return Users.findById(jwtPayload._id)
-					.then(user => callback(null, user))
-					.catch(err => callback(err));
 			}
 		)
 	);
 };
 
-export default passportConfig
+export const applyJwtStrategy = passport => {
+	passport.use(
+		new Strategy(options, (jwtPayload, callback) => {
+			return Users.findById(jwtPayload._id)
+				.then(user => {
+					return callback(null, user);
+				})
+				.catch(err => {
+					return callback(err, false);
+			});
+		})
+	);
+};
