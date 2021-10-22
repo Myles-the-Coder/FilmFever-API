@@ -1,25 +1,19 @@
 import passport from 'passport';
-import passportConfig from './passport.js';
-import pkg from 'jsonwebtoken';
-const { Jwt } = pkg;
+import jwt from 'jsonwebtoken';
+import {config} from './configs.js'
+import { applyJwtStrategy, applyLocalPassport } from './passport.js';
 
-passportConfig(passport); 
+applyLocalPassport(passport)
+applyJwtStrategy(passport)
 
-const jwtSecret = 'your_jwt_secret'
-
-function generateJWTToken(user) {
-  const expiresIn = '7d'
-  const signedToken = Jwt.sign(user, jwtSecret, {
+let generateJWTToken = (user) => {
+  return jwt.sign(user, config.passport.secret, {
     subject: user.Username,
-    expiresIn, 
+    expiresIn: config.passport.expiresIn, 
     algorithm: 'HS256'
   });
-
-  return {
-    token: `Bearer ${signedToken}`,
-    expires: expiresIn
-  }
 }
+
 
 let auth = (router) => {
   router.post('/login', (req, res) => {
