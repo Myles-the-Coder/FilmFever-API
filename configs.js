@@ -1,4 +1,4 @@
-export const config = {
+exports.config = {
   passport: {
     secret: 'Your_secret_key',
     expiresIn: '7d'

@@ -1,41 +1,39 @@
 'use strict';
-import express from 'express';
-import morgan from 'morgan';
-import { Movie, Genre, Director, User } from './models.js';
-import mongoose from 'mongoose';
-import auth from './auth.js';
-import passport from 'passport';
-import { applyLocalPassport, applyJwtStrategy } from './passport.js';
+const express = require('express')
+const morgan = require('morgan')
+const mongoose = require('mongoose')
+const Models = require('./models')
+
+const Movies = Models.Movie;
+const Genres = Models.Genre;
+const Directors = Models.Director;
+const Users = Models.User;
+
+function displayErrorMsg(err) {
+  console.error(err);
+  res.status(500).send(`Error: ${err}`);
+}
+
+function resJSON(model, res) {
+  return model.find().then(data => res.json(data));
+}
 
 const app = express();
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(morgan('common'));
-app.use(express.static(`public`));
-app.use(passport.initialize())
 
-const Movies = Movie;
-const Genres = Genre;
-const Directors = Director;
-const Users = User;
+app.use(morgan('common'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect('mongodb://localhost:27017/filmfeverDB', {
   useNewUrlParser: true,
 	useUnifiedTopology: true,
 });
 
-auth(app);
-applyLocalPassport(passport)
-applyJwtStrategy(passport)
+let auth = require('./auth')(app)
+const passport = require('passport')
+require('./passport')
 
-function displayErrorMsg(err) {
-	console.error(err);
-	res.status(500).send(`Error: ${err}`);
-}
-
-function resJSON(model, res) {
-	return model.find().then(data => res.json(data));
-}
+app.use(express.static(`public`));
 
 //Express Methods
 app.get('/', (req, res) => res.send('Welcome to FilmFever!'));
@@ -97,7 +95,7 @@ app.get(
 );
 
 //Add new user
-app.post('/signup', (req, res) => {
+app.post('/users', (req, res) => {
 	Users.findOne({ Username: req.body.Username })
 		.then(user => {
 			if (user) {
@@ -121,17 +119,18 @@ app.post('/signup', (req, res) => {
 
 //Get all user accounts
 app.get(
-	'/accounts',
-	passport.authenticate('jwt', { session: false }),
+	'/users',
+	// passport.authenticate('jwt', { session: false }),
 	(req, res) => {
 		Users.find()
 			.then(users => res.status(201).json(users))
 			.catch(err => displayErrorMsg(err));
 	}
 );
+
 //Get user by Username
 app.get(
-	'/accounts/:Username',
+	'/users/:Username',
 	passport.authenticate('jwt', { session: false }),
 	(req, res) => {
 		Users.findOne({ Username: req.params.Username })
@@ -142,10 +141,10 @@ app.get(
 
 //Update a user's info, by username
 app.put(
-	'/accounts/update/:Username',
+	'/users/update/:Username',
 	passport.authenticate('jwt', { session: false }),
 	(req, res) => {
-		User.findOneAndUpdate(
+		Users.findOneAndUpdate(
 			{ Username: req.params.Username },
 			{
 				$set: {
@@ -164,10 +163,10 @@ app.put(
 
 //Add a title to a user's favorites list
 app.post(
-	'/accounts/:Username/movies/:MovieID',
+	'/users/:Username/movies/:MovieID',
 	passport.authenticate('jwt', { session: false }),
 	(req, res) => {
-		User.findOneAndUpdate(
+		Users.findOneAndUpdate(
 			{ Username: req.params.Username },
 			{
 				$addToSet: {
@@ -183,10 +182,10 @@ app.post(
 
 //Remove a title from user's favorites list
 app.delete(
-	'/accounts/:Username/movies/:MovieID',
+	'/users/:Username/movies/:MovieID',
 	passport.authenticate('jwt', { session: false }),
 	(req, res) => {
-		User.findOneAndUpdate(
+		Users.findOneAndUpdate(
 			{ Username: req.params.Username },
 			{
 				$pull: {
@@ -202,8 +201,8 @@ app.delete(
 
 //Delete user account by Username
 app.delete(
-	'/accounts/:Username',
-	passport.authenticate('jwt', { session: false }),
+	'/users/:Username',
+	// passport.authenticate('jwt', { session: false }),
 	(req, res) => {
 		Users.findOneAndRemove({ Username: req.params.Username })
 			.then(user => {
