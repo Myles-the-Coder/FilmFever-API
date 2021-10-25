@@ -1,17 +1,19 @@
 'use strict';
-const express = require('express')
-const morgan = require('morgan')
-const mongoose = require('mongoose')
-const Models = require('./models')
+import express, { json, urlencoded } from 'express';
+import morgan from 'morgan';
+import mongoose from 'mongoose';
+import passport from 'passport';
+import {Movie, Genre, Director, User} from './models.js';
+import auth from './auth.js'
 
-const Movies = Models.Movie;
-const Genres = Models.Genre;
-const Directors = Models.Director;
-const Users = Models.User;
+const Movies = Movie;
+const Genres = Genre
+const Directors = Director;
+const Users = User;
 
 function displayErrorMsg(err) {
-  console.error(err);
-  res.status(500).send(`Error: ${err}`);
+	console.error(err);
+	res.status(500).send(`Error: ${err}`);
 }
 
 function resJSON(model, res) {
@@ -20,20 +22,22 @@ function resJSON(model, res) {
 
 const app = express();
 
-app.use(morgan('common'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 mongoose.connect('mongodb://localhost:27017/filmfeverDB', {
-  useNewUrlParser: true,
-	useUnifiedTopology: true,
-});
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(res => console.log('DB Connected!'))
+  .catch(err => console.log(err, err.message));
 
-let auth = require('./auth')(app)
-const passport = require('passport')
-require('./passport')
+  app.use(passport.initialize())
+  app.use(json());
+  app.use(urlencoded({ extended: true }));
+  app.use(express.static(`public`));
+  app.use(morgan('common'));
 
-app.use(express.static(`public`));
+
+auth(app)
+import './passport.js';
 
 //Express Methods
 app.get('/', (req, res) => res.send('Welcome to FilmFever!'));
@@ -120,7 +124,7 @@ app.post('/users', (req, res) => {
 //Get all user accounts
 app.get(
 	'/users',
-	// passport.authenticate('jwt', { session: false }),
+	passport.authenticate('jwt', { session: false }),
 	(req, res) => {
 		Users.find()
 			.then(users => res.status(201).json(users))
@@ -202,7 +206,7 @@ app.delete(
 //Delete user account by Username
 app.delete(
 	'/users/:Username',
-	// passport.authenticate('jwt', { session: false }),
+	passport.authenticate('jwt', { session: false }),
 	(req, res) => {
 		Users.findOneAndRemove({ Username: req.params.Username })
 			.then(user => {
