@@ -1,11 +1,12 @@
-const passport = require("passport"),
-  LocalStrategy = require("passport-local").Strategy,
-  Models = require("./models.js"),
-  passportJWT = require("passport-jwt");
+import passport from "passport";
+import { Strategy as LocalStrategy } from "passport-local";
+import { User } from "./models.js";
+import { Strategy, ExtractJwt } from "passport-jwt";
+import  config  from './configs.js';
 
-let Users = Models.User,
-  JWTStrategy = passportJWT.Strategy,
-  ExtractJWT = passportJWT.ExtractJwt;
+let Users = User,
+  JWTStrategy = Strategy,
+  ExtractJWT = ExtractJwt;
 
 passport.use(
   new LocalStrategy(
@@ -37,16 +38,12 @@ passport.use(
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-      secretOrKey: "your_jwt_secret"
+      secretOrKey: config.passport.secret
     },
     (jwtPayload, callback) => {
       return Users.findById(jwtPayload._id)
-        .then(user => {
-          return callback(null, user);
-        })
-        .catch(error => {
-          return callback(error);
-        });
+        .then(user => callback(null, user))
+        .catch(error => callback(error));
     }
   )
 );

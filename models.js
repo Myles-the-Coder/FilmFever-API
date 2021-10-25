@@ -1,6 +1,7 @@
-const mongoose = require("mongoose");
+import pkg from 'mongoose';
+const { Schema, model } = pkg;
 
-let movieSchema = mongoose.Schema({
+let movieSchema = Schema({
   Title: { type: String, required: true },
   Description: { type: String, required: true },
   Genre: {
@@ -15,30 +16,28 @@ let movieSchema = mongoose.Schema({
   Featured: Boolean
 });
 
-let userSchema = mongoose.Schema({
+let userSchema = Schema({
   Username: { type: String, required: true },
   Password: { type: String, required: true },
   Email: { type: String, required: true },
   Birthday: Date,
-  FavoriteMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Movie" }]
+  FavoriteMovies: [{ type: Schema.Types.ObjectId, ref: "Movie" }]
 });
 
 
-let directorSchema = mongoose.Schema({
+let directorSchema = Schema({
   Name: { type: String, required: true },
   Bio: { type: String, required: true },
   Birthdate: { type: Date, required: true },
   Deathdate: { type: Date },
 });
 
-let genreSchema = mongoose.Schema({
+let genreSchema = Schema({
   Name: { type: String, required: true },
   Description: { type: String, required: true }
 });
 
-let Movie = mongoose.model("Movie", movieSchema);
-let User = mongoose.model("User", userSchema);
-let Director = mongoose.model("Director", directorSchema);
-let Genre = mongoose.model("Genre", genreSchema);
-
-module.exports = { Movie, User, Director, Genre }
+export let Movie = model("Movie", movieSchema);
+export let User = model("User", userSchema);
+export let Director = model("Director", directorSchema);
+export let Genre = model("Genre", genreSchema);

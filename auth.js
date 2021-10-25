@@ -1,20 +1,19 @@
-const jwtSecret = "your_jwt_secret"; // Should be the same code used in the jwtSreategy
+import config  from './configs.js';
+import jwt from "jsonwebtoken";
+import passport from "passport";
 
-const jwt = require("jsonwebtoken"),
-  passport = require("passport");
-
-require("./passport"); // your local passport file
+import "./passport.js"; 
 
 let generateJWTToken = user => {
-  return jwt.sign(user, jwtSecret, {
+  return jwt.sign(user, config.passport.secret, {
     subject: user.Username,
-    expiresIn: "7d",
+    expiresIn: config.passport.expiresIn,
     algorithm: "HS256"
   });
 };
 
 /* POST login. */
-module.exports = router => {
+export default router => {
   router.post("/login", (req, res) => {
     passport.authenticate("local", { session: false }, (error, user, info) => {
       if (error || !user) {
@@ -24,9 +23,7 @@ module.exports = router => {
         });
       }
       req.login(user, { session: false }, error => {
-        if (error) {
-          res.send(error);
-        }
+        if (error) res.send(error);
         let token = generateJWTToken(user.toJSON());
         return res.json({ user, token });
       });
