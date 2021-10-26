@@ -2,7 +2,9 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { User } from "./models.js";
 import { Strategy, ExtractJwt } from "passport-jwt";
-import  config  from './configs.js';
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 let Users = User,
   JWTStrategy = Strategy,
@@ -27,6 +29,11 @@ passport.use(
             message: "Incorrect username."
           });
         }
+
+        if(!user.validatePassword(password)) {
+          console.log('Incorrect Password')
+          return callback(null, false, {message: 'Incorrect password.'})
+        }
         console.log("finished");
         return callback(null, user);
       });
@@ -38,7 +45,7 @@ passport.use(
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-      secretOrKey: config.passport.secret
+      secretOrKey: process.env.SECRET
     },
     (jwtPayload, callback) => {
       return Users.findById(jwtPayload._id)
