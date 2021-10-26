@@ -3,40 +3,52 @@ import express, { json, urlencoded } from 'express';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import passport from 'passport';
-import {Movie, Genre, Director, User} from './models.js';
-import auth from './auth.js'
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { Movie, Genre, Director, User } from './models.js';
+import { displayErrorMsg, resJSON, validateInputs } from './functions.js';
+import auth from './auth.js';
+import { validationResult } from 'express-validator';
+
+dotenv.config();
 
 const Movies = Movie;
-const Genres = Genre
+const Genres = Genre;
 const Directors = Director;
 const Users = User;
 
-function displayErrorMsg(err) {
-	console.error(err);
-	res.status(500).send(`Error: ${err}`);
-}
-
-function resJSON(model, res) {
-  return model.find().then(data => res.json(data));
-}
-
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/filmfeverDB', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(res => console.log('DB Connected!'))
-  .catch(err => console.log(err, err.message));
+mongoose
+	.connect('mongodb://localhost:27017/filmfeverDB', {
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+	})
+	.then(res => console.log('DB Connected!'))
+	.catch(err => console.log(err, err.message));
 
-  app.use(passport.initialize())
-  app.use(json());
-  app.use(urlencoded({ extended: true }));
-  app.use(express.static(`public`));
-  app.use(morgan('common'));
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
 
+app.use(
+	cors({
+		origin: (origin, callback) => {
+			if (!origin) return callback(null, true);
+			if (allowedOrigins.indexOf(origin) === -1) {
+				let message = `The CORS policy for this application doesn't allow access from origin ${origin}`;
+				return callback(new Error(message), false);
+			}
+			return callback(null, true);
+		},
+	})
+);
 
-auth(app)
+app.use(passport.initialize());
+app.use(json());
+app.use(urlencoded({ extended: true }));
+app.use(express.static(`public`));
+app.use(morgan('common'));
+
+auth(app);
 import './passport.js';
 
 //Express Methods
@@ -99,15 +111,20 @@ app.get(
 );
 
 //Add new user
-app.post('/users', (req, res) => {
+app.post('/signup', validateInputs(), (req, res) => {
+	let errors = validationResult(req);
+	if (!errors.isEmpty())
+		return res.status(422).json({ errors: errors.array() });
+
 	Users.findOne({ Username: req.body.Username })
 		.then(user => {
 			if (user) {
 				return res.status(400).send(`${req.body.Username} already exists`);
 			} else {
+				let hashedPassword = Users.hashPassword(req.body.Password);
 				Users.create({
 					Username: req.body.Username,
-					Password: req.body.Password,
+					Password: hashedPassword,
 					Email: req.body.Email,
 					Birthday: req.body.Birthday,
 				})
@@ -146,14 +163,20 @@ app.get(
 //Update a user's info, by username
 app.put(
 	'/users/update/:Username',
+	validateInputs(),
 	passport.authenticate('jwt', { session: false }),
 	(req, res) => {
+		let errors = validationResult(req);
+		if (!errors.isEmpty())
+			return res.status(422).json({ errors: errors.array() });
+
+		let hashedPassword = Users.hashPassword(req.body.Password);
 		Users.findOneAndUpdate(
 			{ Username: req.params.Username },
 			{
 				$set: {
 					Username: req.body.Username,
-					Password: req.body.Password,
+					Password: hashedPassword,
 					Email: req.body.Email,
 					Birthday: req.body.Birthday,
 				},
@@ -226,4 +249,6 @@ app.use((req, res, err, next) => {
 	next();
 });
 
-app.listen(3000, () => console.log('Your app is running on Port 3000'));
+const port = process.env.PORT || 3000;
+
+app.listen(port, '0.0.0.0', () => console.log(`Listening on Port ${port}`));
