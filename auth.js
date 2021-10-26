@@ -1,13 +1,15 @@
-import config  from './configs.js';
 import jwt from "jsonwebtoken";
 import passport from "passport";
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 import "./passport.js"; 
 
 let generateJWTToken = user => {
-  return jwt.sign(user, config.passport.secret, {
+  return jwt.sign(user, process.env.SECRET, {
     subject: user.Username,
-    expiresIn: config.passport.expiresIn,
+    expiresIn: '7d',
     algorithm: "HS256"
   });
 };
