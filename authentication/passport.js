@@ -1,6 +1,6 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { User } from "./models.js";
+import { User } from "../models/models.js";
 import { Strategy, ExtractJwt } from "passport-jwt";
 import dotenv from 'dotenv'
 
