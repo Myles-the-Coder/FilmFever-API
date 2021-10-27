@@ -12,8 +12,10 @@ dotenv.config();
 
 const app = express();
 
+// const localhost = 'mongodb://localhost:27017/filmfeverDB'
+
 mongoose
-	.connect('mongodb://localhost:27017/filmfeverDB', {
+	.connect(process.env.CONNECTION_URL, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 	})
