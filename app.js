@@ -1,5 +1,6 @@
 'use strict';
 import express, { json, urlencoded } from 'express';
+import http from 'http'
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import passport from 'passport';
@@ -55,6 +56,8 @@ app.use((req, res, err, next) => {
 		console.error(err.stack);
 		res.status(500).send('Something broke!');
 	}
+  res.removeHeader("Cross-Origin-Resource-Policy")
+  res.removeHeader("Cross-Origin-Embedder-Policy")
 	next();
 });
 
