@@ -24,19 +24,18 @@ mongoose
 
 let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://m.media-amazon.com'];
 
-// app.use(
-// 	cors({
-// 		origin: (origin, callback) => {
-// 			if (!origin) return callback(null, true);
-// 			if (allowedOrigins.indexOf(origin) === -1) {
-// 				let message = `The CORS policy for this application doesn't allow access from origin ${origin}`;
-// 				return callback(new Error(message), false);
-// 			}
-// 			return callback(null, true);
-// 		},
-// 	})
-// );
-app.use(cors())
+app.use(
+	cors({
+		origin: (origin, callback) => {
+			if (!origin) return callback(null, true);
+			if (allowedOrigins.indexOf(origin) === -1) {
+				let message = `The CORS policy for this application doesn't allow access from origin ${origin}`;
+				return callback(new Error(message), false);
+			}
+			return callback(null, true);
+		},
+	})
+);
 
 
 app.use(passport.initialize());
@@ -55,6 +54,7 @@ app.use((req, res, err, next) => {
 		console.error(err.stack);
 		res.status(500).send('Something broke!');
 	}
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin")
 	next();
 });
 
