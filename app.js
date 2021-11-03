@@ -40,9 +40,8 @@ let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://m
 app.use(cors())
 
 app.use((req, res, next) => {
-  res.removeHeader("Cross-Origin-Resource-Policy")
-  res.removeHeader("Cross-Origin-Embedder-Policy")
-next()
+  res.header("Cross-Origin-Resource-Policy", "cross-origin")
+  next()
 })
 
 app.use(passport.initialize());
