@@ -37,6 +37,10 @@ app.use(
 	})
 );
 
+app.use((req, res, next) => {
+  res.header("Cross-Origin-Resource-Policy", "cross-origin")
+next()
+})
 
 app.use(passport.initialize());
 app.use(json());
@@ -54,7 +58,6 @@ app.use((req, res, err, next) => {
 		console.error(err.stack);
 		res.status(500).send('Something broke!');
 	}
-  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin")
 	next();
 });
 
