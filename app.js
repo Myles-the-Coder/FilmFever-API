@@ -22,36 +22,35 @@ mongoose
 	.then(res => console.log('DB Connected!'))
 	.catch(err => console.log(err, err.message));
   
-  app.use((req, res, next) => {
-    res.header('Access-Control-Expose-Headers', 'Cross-Origin-Resource-Policy', 'Cross-Origin-Embedder-Policy', 'Cross-Origin-Opener-Policy')
-    res.header('Cross-Origin-Resource-Policy', 'cross-origin')
-    res.header('Cross-Origin-Embedder-Policy', 'require-corp')
-    res.header('Cross-Origin-Opener-Policy', 'same-origin')
-    next()
-  })
-
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://m.media-amazon.com'];
-
-app.use(
-	cors({
-		origin: (origin, callback) => {
-			if (!origin) return callback(null, true);
-			if (allowedOrigins.indexOf(origin) === -1) {
-				let message = `The CORS policy for this application doesn't allow access from origin ${origin}`;
-				return callback(new Error(message), false);
-			}
-			return callback(null, true);
-		},
-	})
-);
-
-
 
 app.use(passport.initialize());
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(express.static(`public`));
 app.use(morgan('common'));
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
+  res.header('Cross-Origin-Resource-Policy', 'cross-origin')
+  res.header('Cross-Origin-Embedder-Policy', 'require-corp')
+  res.header('Cross-Origin-Opener-Policy', 'same-origin')
+  next()
+})
+
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://m.media-amazon.com'];
+app.use(
+cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      let message = `The CORS policy for this application doesn't allow access from origin ${origin}`;
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  },
+})
+);
+
 
 auth(app);
 import './authentication/passport.js';
