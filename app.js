@@ -21,6 +21,14 @@ mongoose
 	})
 	.then(res => console.log('DB Connected!'))
 	.catch(err => console.log(err, err.message));
+  
+  app.use((req, res, next) => {
+    res.header('Access-Control-Expose-Headers', 'Cross-Origin-Resource-Policy', 'Cross-Origin-Embedder-Policy', 'Cross-Origin-Opener-Policy')
+    res.header('Cross-Origin-Resource-Policy', 'cross-origin')
+    res.header('Cross-Origin-Embedder-Policy', 'require-corp')
+    res.header('Cross-Origin-Opener-Policy', 'same-origin')
+    next()
+  })
 
 let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://m.media-amazon.com'];
 
@@ -38,13 +46,6 @@ app.use(
 );
 
 
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Expose-Headers', 'Cross-Origin-Resource-Policy', 'Cross-Origin-Embedder-Policy', 'Cross-Origin-Opener-Policy')
-//   res.header('Cross-Origin-Resource-Policy', 'cross-origin')
-//   res.header('Cross-Origin-Embedder-Policy', 'require-corp')
-//   res.header('Cross-Origin-Opener-Policy', 'same-origin')
-//   next()
-// })
 
 app.use(passport.initialize());
 app.use(json());
