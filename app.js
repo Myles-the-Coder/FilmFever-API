@@ -40,7 +40,9 @@ let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://m
 app.use(cors())
 
 app.use((req, res, next) => {
-  res.header("Cross-Origin-Resource-Policy", "cross-origin")
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin")
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp")
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin")
   next()
 })
 
