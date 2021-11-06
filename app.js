@@ -46,7 +46,7 @@ app.use(express.static(`public`));
 app.use(morgan('common'));
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
+  res.header('Access-Control-Expose-Headers', '*')
   res.header('Cross-Origin-Resource-Policy', 'cross-origin')
   res.header('Cross-Origin-Embedder-Policy', 'require-corp')
   res.header('Cross-Origin-Opener-Policy', 'same-origin')
