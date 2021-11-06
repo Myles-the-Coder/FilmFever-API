@@ -14,6 +14,22 @@ const app = express();
 
 // const localhost = 'mongodb://localhost:27017/filmfeverDB'
 
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234'];
+
+app.use(
+cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      let message = `The CORS policy for this application doesn't allow access from origin ${origin}`;
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  },
+})
+);
+
+
 mongoose
 	.connect(process.env.CONNECTION_URL, {
 		useNewUrlParser: true,
@@ -36,21 +52,6 @@ app.use((req, res, next) => {
   res.header('Cross-Origin-Opener-Policy', 'same-origin')
   next()
 })
-
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://m.media-amazon.com'];
-app.use(
-cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      let message = `The CORS policy for this application doesn't allow access from origin ${origin}`;
-      return callback(new Error(message), false);
-    }
-    return callback(null, true);
-  },
-})
-);
-
 
 auth(app);
 import './authentication/passport.js';
