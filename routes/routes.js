@@ -21,6 +21,7 @@ export default router => {
 	//Return JSON data for all movies
 	router.get(
 		'/movies',
+    passport.authenticate('jwt', { session: false }),
 		(req, res) => resJSON(Movies, res)
 	);
 
