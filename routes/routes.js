@@ -157,7 +157,7 @@ export default router => {
 				{ Username: req.params.Username },
 				{
 					$addToSet: {
-						Favorites: req.params.MovieID,
+						FavoriteMovies: req.params.MovieID,
 					},
 				},
 				{ new: true }
