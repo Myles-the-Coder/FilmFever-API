@@ -29,7 +29,6 @@ cors({
 })
 );
 
-
 mongoose
 	.connect(process.env.CONNECTION_URL, {
 		useNewUrlParser: true,
