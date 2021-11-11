@@ -176,7 +176,7 @@ export default router => {
 				{ Username: req.params.Username },
 				{
 					$pull: {
-						Favorites: req.params.MovieID,
+						FavoriteMovies: req.params.MovieID,
 					},
 				},
 				{ new: true }
