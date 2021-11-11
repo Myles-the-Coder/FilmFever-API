@@ -12,12 +12,8 @@ export function resJSON(model, res) {
 export function validateInputs() {
 	return [
 		check('Username', 'Username is required').isLength({ min: 5 }),
-		check(
-			'Username',
-			'Username contains non alphanumeric characters - not allowed.'
-		).isAlphanumeric(),
-		check('Password', 'Password is required').not().isEmpty(),
-		check('Email', 'Email does not appear ot be valid.').isEmail(),
+		check('Password', 'Password is required').notEmpty().isLength({min: 5}),
+		check('Email', 'Email does not appear to be valid.').normalizeEmail().isEmail(),
 	];
 }
 
