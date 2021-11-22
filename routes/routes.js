@@ -27,10 +27,10 @@ export default router => {
 
 	//Get data for a single movie
 	router.get(
-		'/movies/:Title',
+		'/movies/:MovieId',
 		passport.authenticate('jwt', { session: false }),
 		(req, res) => {
-			Movies.findOne({ Title: req.params.Title })
+			Movies.findOne({ _id: req.params.MovieId })
 				.then(movie => res.json(movie))
 				.catch(err => displayErrorMsg(err));
 		}
@@ -45,10 +45,10 @@ export default router => {
 
 	//Get data on a single genre
 	router.get(
-		'/genres/:Genre',
+		'/genres/:Name',
 		passport.authenticate('jwt', { session: false }),
 		(req, res) => {
-			Genres.findOne({ Name: req.params.Genre })
+			Genres.findOne({ Name: req.params.Name })
 				.then(genre => res.json(genre))
 				.catch(err => displayErrorMsg(err));
 		}
@@ -99,17 +99,6 @@ export default router => {
 			})
 			.catch(err => displayErrorMsg(err));
 	});
-
-	//Get all user accounts
-	router.get(
-		'/users',
-		passport.authenticate('jwt', { session: false }),
-		(req, res) => {
-			Users.find()
-				.then(users => res.status(201).json(users))
-				.catch(err => displayErrorMsg(err));
-		}
-	);
 
 	//Get user by Username
 	router.get(
