@@ -77,7 +77,6 @@ export default router => {
 	//Add new user
 	router.post('/signup', validateInputs(), (req, res) => {
 		checkValidationObject(req, res);
-
 		Users.findOne({ Username: req.body.Username })
 			.then(user => {
 				if (user) {
