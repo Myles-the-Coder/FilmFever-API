@@ -21,7 +21,7 @@ export default router => {
       if (error || !user) {
         return res.status(400).json({
           message: "something is not right",
-          user: user
+          user
         });
       }
       req.login(user, { session: false }, error => {

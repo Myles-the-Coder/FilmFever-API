@@ -117,7 +117,6 @@ export default router => {
 		passport.authenticate('jwt', { session: false }),
 		(req, res) => {
 			checkValidationObject(req, res);
-
 			let hashedPassword = Users.hashPassword(req.body.Password);
 			Users.findOneAndUpdate(
 				{ Username: req.params.Username },
