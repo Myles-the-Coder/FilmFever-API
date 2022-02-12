@@ -14,8 +14,8 @@ const Users = User;
 
 import '../authentication/passport.js';
 
+//Express Methods
 export default router => {
-	//Express Methods
 	router.get('/', (req, res) => res.send('Welcome to FilmFever!'));
 
 	//Return JSON data for all movies
@@ -77,17 +77,18 @@ export default router => {
 	//Add new user
 	router.post('/signup', validateInputs(), (req, res) => {
 		checkValidationObject(req, res);
-		Users.findOne({ Username: req.body.Username })
+    const {Username, Password, Email, Birthday} = req.body
+		Users.findOne({ Username })
 			.then(user => {
 				if (user) {
-					return res.status(400).send(`${req.body.Username} already exists`);
+					return res.status(400).send(`${Username} already exists`);
 				} else {
-					let hashedPassword = Users.hashPassword(req.body.Password);
+					let hashedPassword = Users.hashPassword(Password);
 					Users.create({
-						Username: req.body.Username,
+						Username,
 						Password: hashedPassword,
-						Email: req.body.Email,
-						Birthday: req.body.Birthday,
+						Email,
+						Birthday,
 					})
 						.then(user => res.status(201).json(user))
 						.catch(err => {
@@ -117,15 +118,16 @@ export default router => {
 		passport.authenticate('jwt', { session: false }),
 		(req, res) => {
 			checkValidationObject(req, res);
-			let hashedPassword = Users.hashPassword(req.body.Password);
+      const {Username, Password, Email, Birthday} = req.body
+			let hashedPassword = Users.hashPassword(Password);
 			Users.findOneAndUpdate(
 				{ Username: req.params.Username },
 				{
 					$set: {
-						Username: req.body.Username,
+						Username,
 						Password: hashedPassword,
-						Email: req.body.Email,
-						Birthday: req.body.Birthday,
+						Email,
+						Birthday,
 					},
 				},
 				{ new: true }
@@ -159,11 +161,12 @@ export default router => {
 		'/users/:Username/movies/:MovieID',
 		passport.authenticate('jwt', { session: false }),
 		(req, res) => {
+      const {Username, MovieID} = req.params
 			Users.findOneAndUpdate(
-				{ Username: req.params.Username },
+				{ Username },
 				{
 					$pull: {
-						FavoriteMovies: req.params.MovieID,
+						FavoriteMovies: MovieID,
 					},
 				},
 				{ new: true }
@@ -178,11 +181,12 @@ export default router => {
 		'/users/:Username',
 		passport.authenticate('jwt', { session: false }),
 		(req, res) => {
-			Users.findOneAndRemove({ Username: req.params.Username })
+      const {Username} = req.params
+			Users.findOneAndRemove({ Username })
 				.then(user => {
 					user
-						? res.status(200).send(`${req.params.Username} was deleted.`)
-						: res.status(400).send(`${req.params.Username} was not found.`);
+						? res.status(200).send(`${Username} was deleted.`)
+						: res.status(400).send(`${Username} was not found.`);
 				})
 				.catch(err => displayErrorMsg(err));
 		}
