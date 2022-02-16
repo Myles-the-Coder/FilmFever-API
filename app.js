@@ -54,6 +54,7 @@ app.use((req, res, err, next) => {
 		console.error(err.stack);
 		res.status(500).send('Something broke!');
 	}
+  res.setTimeout(200)
 	next();
 });
 
