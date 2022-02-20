@@ -14,7 +14,13 @@ const app = express();
 
 // const localhost = 'mongodb://localhost:27017/filmfeverDB'
 
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'http://localhost:4200', 'https://filmfever.netlify.app'];
+let allowedOrigins = [
+  'http://localhost:8080', 
+  'http://testsite.com', 
+  'http://localhost:1234', 
+  'http://localhost:4200', 
+  'https://filmfever.netlify.app',
+  'https://myles-the-coder.github.io'];
 
 app.use(
 cors({
