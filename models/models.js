@@ -1,6 +1,7 @@
 import pkg from 'mongoose';
 const { Schema, model } = pkg;
 import bcrypt from 'bcrypt';
+import m2s from 'mongoose-to-swagger'
 
 let movieSchema = Schema({
 	Title: { type: String, required: true },
@@ -59,3 +60,11 @@ export let Movie = model('Movie', movieSchema);
 export let User = model('User', userSchema);
 export let Director = model('Director', directorSchema);
 export let Genre = model('Genre', genreSchema);
+let swaggerSchemas = {
+  Movie: m2s(Movie),
+  User: m2s(User),
+  Genre: m2s(Genre),
+  Director: m2s(Director)
+}
+
+console.log(swaggerSchemas)

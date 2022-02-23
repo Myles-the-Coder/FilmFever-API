@@ -14,63 +14,129 @@ const Users = User;
 
 import '../authentication/passport.js';
 
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    Movie:
+ *      type: object
+ *      properties:
+ *        _id:
+ *         type: string
+ *         format: password
+ *         example: 6178814b0b372a23838952a5
+ *        Title:
+ *         type: string
+ *         example: The Godfather
+ *        Description:
+ *         type: string
+ *         example: The Godfather came out in 1972...
+ *        Genre:
+ *         type: object
+ *         properties:
+ *          Name:
+ *           type: string
+ *           example: Drama
+ *          Description:
+ *           type: string
+ *           example: Drama is a genre characterized by...
+ *        Director:
+ *          type: object
+ *          properties:
+ *           Name:
+ *            type: string
+ *            example: Francis Ford Coppola
+ *           Bio:
+ *            type: string
+ *            example: Francis Ford Coppola was born...
+ *        ImagePath:
+ *          type: string
+ *          example: https://th.bing.com/th/id/OIP.EkDaV-ETeaVe1TfXGfPL0AHaLH?pid=ImgDet&rs=1
+ *        Featured:
+ *          type: boolean
+ *    Genre:
+ *     type: object
+ *     properties:
+ *         _id:
+ *          type: integer
+ *          example: 6178814b0b372a23838952a5
+ *         Name:
+ *          type: string
+ *          example: Drama
+ *         Description:
+ *           type: string
+ *           example: Drama is a genre characterized by...
+ *    Director:
+ *     type: object
+ *     properties:
+ *         _id:
+ *          type: integer
+ *          example: 6178814b0b372a23838952a5
+ *         Name:
+ *          type: string
+ *          example: ALfred Hitchcock
+ *         Bio:
+ *           type: string
+ *           example: Alfred Hitchcock was an English film director...
+ *         Birthdate:
+ *           type: string
+ *           example: 1939-04-07T07:00:00.000+00:00
+ *           format: date-time
+ *         Deathdate:
+ *           type: string
+ *           example: 1980-04-29T06:00:00.000+00:00
+ *           format: date-time
+ *    User:
+ *     type: object
+ *     properties:
+ *        _id:
+ *          type: integer
+ *          example: 6178814b0b372a23838952a5
+ *        Username:
+ *          type: string
+ *          description: The user's name.
+ *          example: Jane Doe
+ *        Email:
+ *           type: string
+ *           example: placeholder@gmail.com
+ *        Password:
+ *           type: string
+ *           example: $P$984478476IagS59wHZvyQMArzfx58u
+ *        Birthday:
+ *           type: string
+ *           format: date-time
+ *           example: 1998-06-07T07:00:00.000+00:00
+ *        FavoriteMovies:
+ *           type: array
+ *           items:
+ *             type: string
+ *             example: 6178814b0b372a23838952a5
+ */
+
 //Express Methods
 export default router => {
 	router.get('/', (req, res) => res.send('Welcome to FilmFever!'));
 
-//Return JSON data for all movies
-/**
-* @swagger
-* /movies:
-*    get:
-*      summary: Retrieve a JSON object holding data about all the movies.
-*      description: Retrieve a JSON object holding data about all the movies.
-*      responses:
-*        200:
-*          description: A list of movies
-*          content:
-*            application/json:
-*              schema:
-*                type: object
-*                properties:
-*                    data:
-*                      type: array
-*                      items:
-*                        type: object
-*                        properties:
-*                         Title:
-*                          type: string
-*                          description: Movie title
-*                          example: The Godfather
-*                         Description:
-*                          type: string
-*                          description: Movie description
-*                          example: The Godfather came out in 1972...
-*                         Genre:
-*                          type: object
-*                          properties:
-*                           Name:
-*                            type: string
-*                            example: Drama
-*                           Description:
-*                            type: string
-*                            example: Drama is a genre characterized by...
-*                         Director:
-*                           type: object
-*                           properties:
-*                            Name:
-*                             type: string
-*                             example: Francis Ford Coppola
-*                            Bio:
-*                             type: string
-*                             example: Francis Ford Coppola was born...
-*                         ImagePath:
-*                           type: string
-*                           example: https://th.bing.com/th/id/OIP.EkDaV-ETeaVe1TfXGfPL0AHaLH?pid=ImgDet&rs=1
-*                         Featured:
-*                           type: boolean
-*                         
-*/
+	//Return JSON data for all movies
+	/**
+	 * @swagger
+	 * /movies:
+	 *    get:
+	 *      summary: Retrieve a JSON object holding data about all the movies.
+	 *      description: Retrieve a JSON object holding data about all the movies.
+	 *      responses:
+	 *        200:
+	 *          description: A list of movies
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                    data:
+	 *                      type: array
+	 *                      items:
+	 *                        $ref: '#/components/schemas/Movie'
+	 */
 	router.get(
 		'/movies',
 		passport.authenticate('jwt', { session: false }),
@@ -78,83 +144,43 @@ export default router => {
 	);
 
 	//Get data for a single movie
-  /**
-* @swagger
-* /movies/:MovieId:
-*    get:
-*      summary: Retrieve a JSON object holding data about all the movies.
-*      description: Retrieve a JSON object holding data about all the movies.
-*      responses:
-*        200:
-*          description: A list of movies
-*          content:
-*            application/json:
-*              schema:
-*                type: object
-*                properties:
-*                  Title:
-*                   type: string
-*                   description: Movie title
-*                   example: The Godfather
-*                  Description:
-*                   type: string
-*                   description: Movie description
-*                   example: The Godfather came out in 1972...
-*                  Genre:
-*                   type: object
-*                   properties:
-*                    Name:
-*                     type: string
-*                     example: Drama
-*                    Description:
-*                     type: string
-*                     example: Drama is a genre characterized by...
-*                  Director:
-*                    type: object
-*                    properties:
-*                     Name:
-*                      type: string
-*                      example: Francis Ford Coppola
-*                     Bio:
-*                      type: string
-*                      example: Francis Ford Coppola was born...
-*                  ImagePath:
-*                    type: string
-*                    example: https://th.bing.com/th/id/OIP.EkDaV-ETeaVe1TfXGfPL0AHaLH?pid=ImgDet&rs=1
-*                  Featured:
-*                    type: boolean
-*                  
-*/
+	/**
+	 * @swagger
+	 * /movies/:MovieId:
+	 *    get:
+	 *      summary: Retrieve a JSON object holding data about a single movie by ID.
+	 *      description: Retrieve a JSON object holding data about a single the movies.
+	 *      responses:
+	 *        200:
+	 *          description: Retrieve a JSON object holding data about a single movie by ID.
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: '#/components/schemas/Movie'
+	 */
 	router.get(
 		'/movies/:MovieId',
 		passport.authenticate('jwt', { session: false }),
 		(req, res) => {
-      Movies.findOne({ _id: req.params.MovieId })
-      .then(movie => res.json(movie))
-      .catch(err => displayErrorMsg(err));
+			Movies.findOne({ _id: req.params.MovieId })
+				.then(movie => res.json(movie))
+				.catch(err => displayErrorMsg(err));
 		}
-    );
-//Return JSON data for all genres
-/**
-* @swagger
-* /genres:
-*   get:
-*    summary: A JSON object holding data about all available genres
-*    responses: 
-*      200:
-*       description: A list of genres 
-*       content:
-*         application/json:
-*           schema:
-*             type: object
-*             properties:
-*                 Name:
-*                  type: string
-*                  example: Drama
-*                 Description:
-*                   type: string
-*                   example: Drama is a genre characterized by...
- */
+	);
+	//Return JSON data for all genres
+	/**
+	 * @swagger
+	 * /genres:
+	 *   get:
+	 *    summary: A JSON object holding data about all available genres
+	 *    responses:
+	 *      200:
+	 *       description: A list of genres
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             $ref: '#/components/schemas/Genre'
+	 */
 	router.get(
 		'/genres',
 		passport.authenticate('jwt', { session: false }),
@@ -162,26 +188,19 @@ export default router => {
 	);
 
 	//Get data on a single genre
-/**
-* @swagger
-* /genre/:Name:
-*   get:
-*    summary: A JSON object holding data about a single genre by name
-*    responses: 
-*      200:
-*       description: A JSON object holding data about a single genre by name
-*       content:
-*         application/json:
-*           schema:
-*             type: object
-*             properties:
-*                 Name:
-*                  type: string
-*                  example: Drama
-*                 Description:
-*                   type: string
-*                   example: Drama is a genre characterized by...
-*/
+	/**
+	 * @swagger
+	 * /genre/:Name:
+	 *   get:
+	 *    summary: A JSON object holding data about a single genre by name
+	 *    responses:
+	 *      200:
+	 *       description: A JSON object holding data about a single genre by name
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             $ref: '#/components/schemas/Genre'
+	 */
 	router.get(
 		'/genres/:Name',
 		passport.authenticate('jwt', { session: false }),
@@ -202,34 +221,19 @@ export default router => {
 	);
 
 	//Return data on a single director
-/**
-* @swagger
-* /directors/:Name:
-*   get:
-*    summary: A JSON object holding data about a single director by name
-*    responses: 
-*      200:
-*       description: A JSON object holding data about a single director by name
-*       content:
-*         application/json:
-*           schema:
-*             type: object
-*             properties:
-*                 Name:
-*                  type: string
-*                  example: ALfred Hitchcock
-*                 Bio:
-*                   type: string
-*                   example: Alfred Hitchcock was an English film director...
-*                 Birthdate:
-*                   type: string
-*                   example: 1939-04-07T07:00:00.000+00:00
-*                   format: date-time
-*                 Deathdate:
-*                   type: string
-*                   example: 980-04-29T06:00:00.000+00:00
-*                   format: date-time
-*/
+	/**
+	 * @swagger
+	 * /directors/:Name:
+	 *   get:
+	 *    summary: A JSON object holding data about a single director by name
+	 *    responses:
+	 *      200:
+	 *       description: A JSON object holding data about a single director by name
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             $ref: '#/components/schemas/Director'
+	 */
 	router.get(
 		'/directors/:Name',
 		passport.authenticate('jwt', { session: false }),
@@ -241,32 +245,20 @@ export default router => {
 	);
 
 	//Validate user inputs and, if valid, add user to database
- /**
-* @swagger
-* /users/{id}:
-*   get:
-*     summary: Retrieve a single JSONPlaceholder user.
-*     description: Retrieve a single JSONPlaceholder user. Can be used to populate a user profile when prototyping or testing an API.
-*     responses:
-*       200:
-*         description: A single user.
-*         content:
-*           application/json:
-*             schema:
-*               type: object
-*               properties:
-*                 data:
-*                   type: object
-*                   properties:
-*                     id:
-*                       type: integer
-*                       description: The user ID.
-*                       example: 0
-*                     name:
-*                       type: string
-*                       description: The user's name.
-*                       example: Leanne Graham
-*/
+	/**
+	 * @swagger
+	 * /signup:
+	 *   post:
+	 *     summary: Validate user inputs and, if valid, add user to database.
+	 *     description: Validate user inputs and, if valid, add user to database. Can be used to populate a user profile when prototyping or testing an API.
+	 *     responses:
+	 *       201:
+	 *         description: Validate user inputs and, if valid, add user to database. Can be used to populate a user profile when prototyping or testing an API.
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: '#/components/schemas/User'
+	 */
 	router.post('/signup', validateInputs(), (req, res) => {
 		checkValidationObject(req, res);
 		const { Username, Password, Email, Birthday } = req.body;
@@ -293,11 +285,26 @@ export default router => {
 	});
 
 	//Get user by Username
+	/**
+	 * @swagger
+	 * /users/:Username:
+	 *   get:
+	 *     summary: Retrieve a single user. Can be used to populate a user profile when prototyping or testing an API.
+	 *     description: Retrieve a single user. Can be used to populate a user profile when prototyping or testing an API.
+	 *     responses:
+	 *       200:
+	 *         description: Retrieve a single user. Can be used to populate a user profile when prototyping or testing an API.
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: '#/components/schemas/User'
+	 */
 	router.get(
 		'/users/:Username',
 		passport.authenticate('jwt', { session: false }),
 		(req, res) => {
-			Users.findOne({ Username: req.params.Username })
+			const { Username } = req.params;
+			Users.findOne({ Username })
 				.then(user => res.json(user))
 				.catch(err => displayErrorMsg(err));
 		}
@@ -328,7 +335,35 @@ export default router => {
 				.catch(err => displayErrorMsg(err));
 		}
 	);
-
+	/**
+	 * @swagger
+	 * /users/:Username/movies/:MovieID:
+	 *   post:
+	 *     summary: Add a movie to user's favorites list by movie ID.
+	 *     description: Add a movie to user's favorites list by movie ID.
+	 *     parameters:
+	 *       - in: path
+	 *         name: Username
+	 *         required: true
+	 *         description: user's username
+	 *         schema:
+	 *           type: string
+	 *           example: JohnDoe123
+	 *       - in: path
+	 *         name: MovieID
+	 *         required: true
+	 *         description: ID of movie to be added to favorites list
+	 *         schema:
+	 *           type: string
+	 *           example: 6178814b0b372a23838952a5
+	 *     responses:
+	 *       201:
+	 *         description: Add a movie to user's favorites list by movie ID..
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: '#/components/schemas/Movie/properties/_id'
+	 */
 	//Add a title to a user's favorites list
 	router.post(
 		'/users/:Username/movies/:MovieID',
@@ -349,6 +384,20 @@ export default router => {
 		}
 	);
 
+	/**
+	 * @swagger
+	 * /users/:Username/movies/:MovieID:
+	 *   delete:
+	 *     summary: Remove a movie from the user's favorite list by movie ID.
+	 *     description: Remove a movie from the user's favorite list by movie ID.
+	 *     responses:
+	 *       200:
+	 *         description: Remove a movie from the user's favorite list by movie ID.
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: '#/components/schemas/User'
+	 */
 	//Remove a title from user's favorites list
 	router.delete(
 		'/users/:Username/movies/:MovieID',
@@ -368,6 +417,22 @@ export default router => {
 				.catch(err => displayErrorMsg(err));
 		}
 	);
+
+	/**
+	 * @swagger
+	 * /users/:Username:
+	 *   delete:
+	 *     summary: Delete a user account by username
+	 *     description: Delete a user account by username
+	 *     responses:
+	 *       200:
+	 *         description: Delete a user account by username
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: string
+	 *               example: Username was deleted
+	 */
 
 	//Delete user account by username
 	router.delete(
