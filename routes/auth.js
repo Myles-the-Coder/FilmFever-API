@@ -5,7 +5,11 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import "../authentication/passport.js"; 
-
+/**
+ * This function generates a JWT to authenticate user 
+ * @param {string} user 
+ * @returns JSON Web Token
+ */
 let generateJWTToken = user => {
   return jwt.sign(user, process.env.SECRET, {
     subject: user.Username,

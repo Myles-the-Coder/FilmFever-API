@@ -25,10 +25,19 @@ let userSchema = Schema({
 	FavoriteMovies: [{ type: Schema.Types.ObjectId, ref: 'Movie' }],
 });
 
+/**
+ * This function hashes the user's password
+ * @param {string} password 
+ * @returns Hashed password
+ */
 userSchema.statics.hashPassword = function(password) {
   return bcrypt.hashSync(password, 10);
 };
-
+/**
+ * This function compares the user's password with the hashed password in the database
+ * @param {string} password 
+ * @returns boolean value
+ */
 userSchema.methods.validatePassword = function(password) {
   return bcrypt.compareSync(password, this.Password);
 };
