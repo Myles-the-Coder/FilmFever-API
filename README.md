@@ -16,7 +16,7 @@ This project was built for the purpose of gaining more experience with back-end 
 
 1. Password hashing for security
 2. JSON Web Token generation for user authentication
-3. 
+3. Request logging with morgan
 
 ## ⛏️Built with
   "dependencies"
@@ -46,22 +46,12 @@ These instructions will help you to setup your own copy of FilmFever-API on your
 ## 📚Prerequisite
 
 #### //Necessary
-
-- Express
 - Node & NPM
-- Passport
-- JSON Web Token
-
-#### //Optional
-
-- Morgan
-- uuid
-- nodemon
-
+- 
 ## 🧰Installation
 
 1. Clone this repo
-2. Install all the dependencies listed above
+2. Install all the dependencies listed above using ```npm install```
 3. Tweak code depending on local settings
 4. Run ```node app.js``` or (optionally)```nodemon app.js``` in your terminal to start local server
 
