@@ -22,15 +22,21 @@ let generateJWTToken = user => {
 * @swagger
 * /login:
 *   post:
-*     summary: Validate user inputs and, if valid, login user.
-*     description: Validate user inputs and, if valid, login user.
+*     summary: Validate user inputs and, if valid, generate JWT and login user.
+*     description: Validate user inputs and, if valid, generate JWT and login user.
 *     responses:
 *       201:
-*         description: Validate user inputs and, if valid, login user.
+*         description: Validate user inputs and, if valid, generate JWT and login user.
 *         content:
 *           application/json:
 *             schema:
-*               $ref: '#/components/schemas/User'
+*               type: object
+*               properties:
+*                 data:
+*                   $ref: '#/components/schemas/User'
+*                 token:
+*                   type: string
+*                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 */
 
 /* POST login. */
