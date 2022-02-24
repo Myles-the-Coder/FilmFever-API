@@ -23,7 +23,6 @@ import '../authentication/passport.js';
  *      properties:
  *        _id:
  *         type: string
- *         format: password
  *         example: 6178814b0b372a23838952a5
  *        Title:
  *         type: string
@@ -74,7 +73,7 @@ import '../authentication/passport.js';
  *          example: 6178814b0b372a23838952a5
  *         Name:
  *          type: string
- *          example: ALfred Hitchcock
+ *          example: Alfred Hitchcock
  *         Bio:
  *           type: string
  *           example: Alfred Hitchcock was an English film director...
@@ -111,6 +110,8 @@ import '../authentication/passport.js';
  *           items:
  *             type: string
  *             example: 6178814b0b372a23838952a5
+ *    UserParameter:
+ *     
  */
 
 //Express Methods
@@ -150,6 +151,13 @@ export default router => {
 	 *    get:
 	 *      summary: Retrieve a JSON object holding data about a single movie by ID.
 	 *      description: Retrieve a JSON object holding data about a single the movies.
+	 *      parameters:
+	 *        - in: path
+	 *          name: MovieId
+	 *          required: true
+	 *          description: Id of movie
+	 *          schema:
+	 *            $ref: '#/components/schemas/Movie/properties/_id'
 	 *      responses:
 	 *        200:
 	 *          description: Retrieve a JSON object holding data about a single movie by ID.
@@ -179,7 +187,9 @@ export default router => {
 	 *       content:
 	 *         application/json:
 	 *           schema:
-	 *             $ref: '#/components/schemas/Genre'
+	 *             type: array
+	 *             items:
+	 *              $ref: '#/components/schemas/Genre'
 	 */
 	router.get(
 		'/genres',
@@ -193,6 +203,13 @@ export default router => {
 	 * /genre/:Name:
 	 *   get:
 	 *    summary: A JSON object holding data about a single genre by name
+	 *    parameters:
+	 *      - in: path
+	 *        name: Name
+	 *        required: true
+	 *        description: Name of genre
+	 *        schema:
+	 *          $ref: '#/components/schemas/Genre/properties/Name'
 	 *    responses:
 	 *      200:
 	 *       description: A JSON object holding data about a single genre by name
@@ -211,6 +228,23 @@ export default router => {
 		}
 	);
 
+	//Return data on all directors
+	/**
+	 * @swagger
+	 * /directors:
+	 *   get:
+	 *    summary: A JSON object holding data about all directors in database.
+	 *    responses:
+	 *      200:
+	 *       description: A JSON object holding data about all directors in database.
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             type: array
+	 *             items:
+	 *                $ref: '#/components/schemas/Director'
+	 */
+
 	//Return JSON data for all directors
 	router.get(
 		'/directors',
@@ -226,6 +260,13 @@ export default router => {
 	 * /directors/:Name:
 	 *   get:
 	 *    summary: A JSON object holding data about a single director by name
+	 *    parameters:
+	 *      - in: path
+	 *        name: Name
+	 *        required: true
+	 *        description: Name of director
+	 *        schema:
+	 *          $ref: '#/components/schemas/Director/properties/Name'
 	 *    responses:
 	 *      200:
 	 *       description: A JSON object holding data about a single director by name
@@ -291,6 +332,13 @@ export default router => {
 	 *   get:
 	 *     summary: Retrieve a single user. Can be used to populate a user profile when prototyping or testing an API.
 	 *     description: Retrieve a single user. Can be used to populate a user profile when prototyping or testing an API.
+	 *     parameters:
+	 *       - in: path
+	 *         name: Username
+	 *         required: true
+	 *         description: User's username
+	 *         schema:
+	 *           $ref: '#/components/schemas/User/properties/Username'
 	 *     responses:
 	 *       200:
 	 *         description: Retrieve a single user. Can be used to populate a user profile when prototyping or testing an API.
@@ -309,6 +357,28 @@ export default router => {
 				.catch(err => displayErrorMsg(err));
 		}
 	);
+
+	/**
+	 * @swagger
+	 * /users/update/:Username:
+	 *   put:
+	 *     summary: Validate user inputs and, if valid, update user information in database.
+	 *     description: Validate user inputs and, if valid, update user information in database.
+	 *     parameters:
+	 *       - in: path
+	 *         name: Username
+	 *         required: true
+	 *         description: User's username
+	 *         schema:
+	 *           $ref: '#/components/schemas/User/properties/Username'
+	 *     responses:
+	 *       201:
+	 *         description: Validate user inputs and, if valid, update user information in database.
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: '#/components/schemas/User'
+	 */
 
 	//Validate user inputs. If valid, update a user's info, by username
 	router.put(
@@ -347,22 +417,20 @@ export default router => {
 	 *         required: true
 	 *         description: user's username
 	 *         schema:
-	 *           type: string
-	 *           example: JohnDoe123
+	 *          $ref: '#/components/schemas/User/properties/Username'
 	 *       - in: path
 	 *         name: MovieID
 	 *         required: true
 	 *         description: ID of movie to be added to favorites list
 	 *         schema:
-	 *           type: string
-	 *           example: 6178814b0b372a23838952a5
+	 *           $ref: '#/components/schemas/Movie/properties/_id'
 	 *     responses:
 	 *       201:
 	 *         description: Add a movie to user's favorites list by movie ID..
 	 *         content:
 	 *           application/json:
 	 *             schema:
-	 *               $ref: '#/components/schemas/Movie/properties/_id'
+	 *               $ref: '#/components/schemas/User'
 	 */
 	//Add a title to a user's favorites list
 	router.post(
@@ -390,6 +458,19 @@ export default router => {
 	 *   delete:
 	 *     summary: Remove a movie from the user's favorite list by movie ID.
 	 *     description: Remove a movie from the user's favorite list by movie ID.
+	 *     parameters:
+	 *       - in: path
+	 *         name: Username
+	 *         required: true
+	 *         description: user's username
+	 *         schema:
+	 *          $ref: '#/components/schemas/User/properties/Username'
+	 *       - in: path
+	 *         name: MovieID
+	 *         required: true
+	 *         description: ID of movie to be added to favorites list
+	 *         schema:
+	 *           $ref: '#/components/schemas/Movie/properties/_id'
 	 *     responses:
 	 *       200:
 	 *         description: Remove a movie from the user's favorite list by movie ID.
@@ -424,6 +505,13 @@ export default router => {
 	 *   delete:
 	 *     summary: Delete a user account by username
 	 *     description: Delete a user account by username
+	 *     parameters:
+	 *       - in: path
+	 *         name: Username
+	 *         required: true
+	 *         description: user's username
+	 *         schema:
+	 *          $ref: '#/components/schemas/User/properties/Username'
 	 *     responses:
 	 *       200:
 	 *         description: Delete a user account by username
@@ -433,7 +521,6 @@ export default router => {
 	 *               type: string
 	 *               example: Username was deleted
 	 */
-
 	//Delete user account by username
 	router.delete(
 		'/users/:Username',

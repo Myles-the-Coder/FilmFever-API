@@ -18,6 +18,21 @@ let generateJWTToken = user => {
   });
 };
 
+/**
+* @swagger
+* /login:
+*   post:
+*     summary: Validate user inputs and, if valid, login user.
+*     description: Validate user inputs and, if valid, login user.
+*     responses:
+*       201:
+*         description: Validate user inputs and, if valid, login user.
+*         content:
+*           application/json:
+*             schema:
+*               $ref: '#/components/schemas/User'
+*/
+
 /* POST login. */
 export default router => {
   router.post("/login", (req, res) => {
