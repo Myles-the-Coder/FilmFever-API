@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 import passport from "passport";
-import dotenv from 'dotenv'
+import {config} from 'dotenv'
 
-dotenv.config()
+config()
 
 import "../authentication/passport.js"; 
 /**

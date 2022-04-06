@@ -222,7 +222,8 @@ export default router => {
 		'/genres/:Name',
 		passport.authenticate('jwt', { session: false }),
 		(req, res) => {
-			Genres.findOne({ Name: req.params.Name })
+      const {Name} = req.params;
+			Genres.findOne({ Name })
 				.then(genre => res.json(genre))
 				.catch(err => displayErrorMsg(err));
 		}
@@ -279,7 +280,8 @@ export default router => {
 		'/directors/:Name',
 		passport.authenticate('jwt', { session: false }),
 		(req, res) => {
-			Directors.findOne({ Name: req.params.Name })
+      const {Name} = req.params;
+			Directors.findOne({ Name })
 				.then(director => res.json(director))
 				.catch(err => displayErrorMsg(err));
 		}

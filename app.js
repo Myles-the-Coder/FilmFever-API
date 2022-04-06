@@ -44,8 +44,6 @@ const swaggerSpec = swaggerJSDoc(options);
 dotenv.config();
 const app = express();
 
-// const localhost = 'mongodb://localhost:27017/filmfeverDB'
-
 let allowedOrigins = [
 	'http://localhost:8080',
 	'http://testsite.com',
